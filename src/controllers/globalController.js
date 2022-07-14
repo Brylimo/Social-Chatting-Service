@@ -1,5 +1,5 @@
 export const handleHome = (req, res) => {
-	return res.render("index.html");
+	return res.render("login.html");
 };
 
 export const handleSignUp = (req, res) => {
