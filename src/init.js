@@ -28,18 +28,7 @@ function publicRooms() {
 }
 
 function countRoom(roomName) {
-	return wsServer.sockets.adapter.rooms.get(roomName)?.size;
-}
-
-async function createRoom(roomInfo) {
-	try{
-		let room = await prisma.room.create({
-			data: roomInfo
-		})
-		console.log(`create room: ${room}`);
-	} catch (error){
-		console.log(error);
-	}
+	return wsServer.sockets.adapter.rooms.get(roomName)?.size ? wsServer.sockets.adapter.rooms.get(roomName)?.size : 0;
 }
 
 async function increaseParticipants(roomName) {
@@ -48,11 +37,10 @@ async function increaseParticipants(roomName) {
 			where: { roomName: roomName }
 		})
 
-		let room = await prisma.room.updateMany({
+		await prisma.room.update({
 			where: { roomName : roomName },
 			data: { participantsNum: (roomInfo.participantsNum + 1) }
 		})
-
 	} catch (error){
 		console.log(error);
 	}
@@ -64,23 +52,11 @@ async function reduceParticipants(roomName) {
 			where: { roomName: roomName }
 		})
 
-		let room = await prisma.room.updateMany({
+		await prisma.room.update({
 			where: { roomName : roomName },
 			data: { participantsNum: (roomInfo.participantsNum - 1) }
 		})
 
-	} catch (error){
-		console.log(error);
-	}
-}
-
-async function deleteRoom(roomName) {
-	try{
-		let room = await prisma.room.deleteMany({
-			where: { roomName : roomName}
-		})
-		console.log("delete room");
-		
 	} catch (error){
 		console.log(error);
 	}
@@ -91,17 +67,25 @@ wsServer.on("connection", socket => {
 	socket.onAny((event) => {
 		console.log(`Socket Event:${event}`);
 	});
-	socket.on("count_room", (roomName) => {
-		return countRoom(roomName);
+	socket.on("count_room", (roomName, done) => {
+		done(countRoom(roomName));
 	});
-	socket.on("enter_room", (roomName) => {
+	socket.on("enter_room", async (roomName, done) => {
 		socket.join(roomName);
-		socket.to(roomName).emit("welcome", socket.nickname, countRoom(roomName));
-		wsServer.sockets.emit("room_change", publicRooms());
+		await increaseParticipants(roomName);
+		done();
+		wsServer.sockets.emit("welcome", roomName, socket.nickname, countRoom(roomName));
+		//wsServer.sockets.emit("room_change", publicRooms());
 	});
 	socket.on("new_message", (msg, room, done) => {
 		socket.to(room).emit("new_message", `${socket.nickname}: ${msg}`);
 		done();
+	});
+	socket.on("exit_room", async (roomName, done) => {
+		await reduceParticipants(roomName);
+		done();
+		socket.leave(roomName);
+		wsServer.sockets.emit("bye", roomName, socket.nickname, countRoom(roomName));
 	});
 	socket.on("nickname", (nickname) => (socket["nickname"] = nickname));
 });

@@ -14,3 +14,7 @@ export const logout = (req, res) => {
 	req.session.destroy();
 	return res.redirect('/');
 }
+
+export const handleUser = (req, res) => {
+	return res.render("user.html");
+}

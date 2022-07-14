@@ -14,13 +14,14 @@ model User {
 	userId				Int		@id @default(autoincrement())
 	id					String	@unique	@db.VarChar(45)
 	password			String	@db.VarChar(255)
+	createdAt 			DateTime @default(now())
   	fromFollowers    Follower[] @relation("from")
  	toFollowers      Follower[] @relation("to")
 }
 
 model Room {
 	roomId				Int		@id	@default(autoincrement())
-	roomName			String  @db.VarChar(45)
+	roomName			String  @db.VarChar(45) @unique
 	participantsNum		Int
 }
 
