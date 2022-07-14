@@ -20,6 +20,7 @@ model User {
 
 model Room {
 	roomId				Int		@id	@default(autoincrement())
+	roomName			String  @db.VarChar(45)
 	participantsNum		Int
 }
 
@@ -31,4 +32,11 @@ model Follower {
   toUser     User    @relation("to", fields: [toId], references: [userId], onDelete: Cascade)
 
   @@id([fromId, toId])
+}
+
+model Session {
+  id         String  @id
+  sid		 String  @unique
+  data       String  @db.VarChar(1000)
+  expiresAt  DateTime
 }

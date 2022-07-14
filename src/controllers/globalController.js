@@ -5,3 +5,12 @@ export const handleHome = (req, res) => {
 export const handleSignUp = (req, res) => {
 	return res.render("signup.html");
 }
+
+export const handleMain = (req, res) => {
+	return res.render("main.html");
+}
+
+export const logout = (req, res) => {
+	req.session.destroy();
+	return res.redirect('/');
+}

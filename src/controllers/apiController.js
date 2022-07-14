@@ -48,8 +48,21 @@ export const postLogin = async (req, res, next) => {
 		if (!match){
 			return res.sendStatus(400);
 		}
+		req.session.loggedIn = true;
+		req.session.user = userData;
 		return res.sendStatus(200);		
 
+	} catch(error) {
+		console.log(error);
+		next(error);
+	}	
+}
+
+export const getUser = async (req, res, next) => {
+	const user = req.session.user;
+	
+	try {
+		return res.status(200).json({ id: user.id });
 	} catch(error) {
 		console.log(error);
 		next(error);

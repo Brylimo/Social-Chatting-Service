@@ -1,9 +1,11 @@
 import express from "express";
-import { postSignup, postLogin } from "../controllers/apiController";
+import { postSignup, postLogin, getUser } from "../controllers/apiController";
+import { protectedOnlyMiddleware, publicOnlyMiddleware } from "../middleware";
 
 const apiRouter = express.Router();
 
-apiRouter.post("/signup", postSignup);
-apiRouter.post("/login", postLogin);
+apiRouter.post("/signup", publicOnlyMiddleware, postSignup);
+apiRouter.post("/login", publicOnlyMiddleware, postLogin);
+apiRouter.get("/user", protectedOnlyMiddleware, getUser);
 
 export default apiRouter;

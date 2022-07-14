@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>social chatting</title>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<div>
+			<a href="/">Rooms</a>
+			<a href="/">Users</a>
+			<a href="/">Friends</a>
+			<a href="/logout">Logout</a>
+		</div>
+
+		<div id="rooms-box">
+			<div id="room1">
+				<p>참여인원수:<span id="participantsOne"></span></p>
+				<p>방 번호: 1</p>
+				<button type="button">입장</button>
+			</div>
+			<div id="room2">
+				<p>참여인원수:<span id="participantsTwo"></span></p>
+				<p>방 번호: 2</p>
+				<button type="button">입장</button>
+			</div>
+		</div>
+		
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/static/js/main.js"></script>
+	</body>
+</html>

@@ -17,7 +17,7 @@ const handleLoginSubmit = async (event) => {
 	if (response.status == 200) {
 		loginId.value = "";
 		loginPwd.value = "";
-		window.location.href = '/';
+		window.location.href = '/main';
 	} else if (response.status == 400) {
 		loginId.value = "";
 		loginPwd.value = "";
